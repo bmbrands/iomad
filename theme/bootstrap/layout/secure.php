@@ -21,24 +21,24 @@ $regions = bootstrap_grid($hassidepre, $hassidepost);
 $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('bootstrap', 'theme_bootstrap');
 
-$settingshtml = theme_bootstrap_html_for_settings($PAGE);
-
+$navbarclass = 'navbar navbar-default';
+if ($PAGE->theme->settings->inversenavbar == true) {
+    $navbarclass = 'navbar navbar-inverse';
+}
 echo $OUTPUT->doctype() ?>
 <html <?php echo $OUTPUT->htmlattributes(); ?>>
 <head>
     <title><?php echo $OUTPUT->page_title(); ?></title>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
-    <?php echo $settingshtml->brandfontlink; ?>
     <?php echo $OUTPUT->standard_head_html() ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
-    <style><?php echo $settingshtml->companycss ?></style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body <?php echo $OUTPUT->body_attributes(); ?>>
 
 <?php echo $OUTPUT->standard_top_of_body_html() ?>
 
-<nav role="navigation" class="<?php echo $settingshtml->navbarclass ?>">
+<nav role="navigation" class="<?php echo $navbarclass ?>">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#moodle-navbar">
             <span class="sr-only">Toggle navigation</span>
@@ -62,7 +62,6 @@ echo $OUTPUT->doctype() ?>
 
     <header id="page-header" class="clearfix">
         <?php echo $OUTPUT->page_heading(); ?>
-        <?php echo $settingshtml->heading; ?>
     </header>
 
     <div id="page-content" class="row">

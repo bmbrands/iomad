@@ -74,6 +74,7 @@ class theme_bootstrap_core_course_renderer extends core_course_renderer {
             }
             $content .= html_writer::end_tag('div'); // .enrolmenticons
         }
+        $content .= html_writer::tag('div', '', array('class' => 'clearfix'));
 
         $content .= html_writer::end_tag('div'); // End .panel-heading.
 
@@ -127,10 +128,12 @@ class theme_bootstrap_core_course_renderer extends core_course_renderer {
                     '/'. $file->get_contextid(). '/'. $file->get_component(). '/'.
                     $file->get_filearea(). $file->get_filepath(). $file->get_filename(), !$isimage);
             if ($isimage) {
-                $contentimages .= html_writer::tag('div',
-                        html_writer::empty_tag('img', array('src' => $url, 'alt' => 'Course Image '. $course->fullname)),
-                        array('class' => 'courseimage'));
+                $courselink = new moodle_url('/course/view.php', array('id' => $course->id));
+                $courseimage = html_writer::empty_tag('img', array('src' => $url, 'alt' => 'Course Image '. $course->fullname, 
+                    'class' => 'courseimage'));
+                $contentimages .= html_writer::link($courselink, $courseimage);
             } else {
+
                 $image = $this->output->pix_icon(file_file_icon($file, 24), $file->get_filename(), 'moodle');
                 $filename = html_writer::tag('span', $image, array('class' => 'fp-icon')).
                         html_writer::tag('span', $file->get_filename(), array('class' => 'fp-filename'));
@@ -143,10 +146,7 @@ class theme_bootstrap_core_course_renderer extends core_course_renderer {
 
         // display course summary
         if ($course->has_summary()) {
-            $content .= html_writer::start_tag('div', array('class' => 'summary'));
-            $content .= $chelper->get_course_formatted_summary($course,
-                    array('overflowdiv' => true, 'noclean' => true, 'para' => false));
-            $content .= html_writer::end_tag('div'); // .summary
+            $content .= $course->summary;
         }
 
         // display course contacts. See course_in_list::get_course_contacts()
@@ -173,8 +173,6 @@ class theme_bootstrap_core_course_renderer extends core_course_renderer {
                 $content .= html_writer::end_tag('div'); // .coursecat
             }
         }
-
-        $content .= html_writer::tag('div', '', array('class' => 'boxfooter')); // .coursecat
 
         return $content;
     }

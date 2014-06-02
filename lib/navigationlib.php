@@ -1668,6 +1668,8 @@ class global_navigation extends navigation_node {
         } else {
             $categoriesiomad = $categoriesrs;
         }
+	// BMBRANDS WORKAROUND HACK GROWDLY
+        $categoriesiomad = $categoriesrs;
 
         $categories = array();
         foreach ($categoriesiomad as $category) {

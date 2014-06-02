@@ -1,13 +1,33 @@
 About this theme
 ================
 
-This is the Bootstrap theme for Iomad
+![image1](pix/screenshot.jpg "Moodle Bootstrap Screenshot")
 
-* package   Moodle Iomad Bootstrap theme
-* copyright 2014 Bas Brands. www.sonsbeekmedia.nl
-* author   Bas Brands
+This is the Bootstrap theme for Moodle.
+
+* package   Moodle Bootstrap theme
+* copyright 2013 Bas Brands. www.sonsbeekmedia.nl
+* authors   Bas Brands, David Scotson
 * license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
+This theme has been created with the help of:
+Stuart Lamour, Mark Aberdour, Paul Hibbitts, Mary Evans, Joby Harding, Gareth J Barnard
+
+This theme is based on the Bootstrap CSS framework version 3.0.2.
+It contains all unmodified less* CSS sources from the Bootstrap CSS
+framework in folder /less/bootstrap.
+On top of the Bootstrap less CSS sources Moodle CSS is added to create this
+theme.
+
+HTML5 is tags are used in the /layout/general.php file. The structure of this file
+provides a 2-1-3 layout when looking at your Moodle page source. This improves
+accessibility and Search Engine Optimization (SEO).
+
+*less CSS
+Less CSS is a Object Oriented way of writing CSS code. All Less CSS files
+for this theme are stored in the /less folder. A developer can use recess
+to generate the CSS files in the /style folder. For more
+information read /less/README
 
 JavaScript Libraries
 

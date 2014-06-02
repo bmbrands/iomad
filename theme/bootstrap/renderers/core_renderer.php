@@ -44,13 +44,8 @@ class theme_bootstrap_core_renderer extends core_renderer {
         if ($classes == 'redirectmessage') {
             return html_writer::div($message, 'alert alert-block alert-info');
         }
-        if ($classes == 'notifytiny') {
-            // Not an appropriate semantic alert class!
-            return $this->debug_listing($message);
-        }
         return html_writer::div($message, $classes);
     }
-
 
     public function navbar_button_burger() {
         $content = '';
@@ -74,10 +69,6 @@ class theme_bootstrap_core_renderer extends core_renderer {
         }
         return '';
     }
-    private function debug_listing($message) {
-        $message = str_replace('<ul style', '<ul class="list-unstyled" style', $message);
-        return html_writer::tag('pre', $message, array('class' => 'alert alert-info'));
-    }
 
     public function navbar() {
         $breadcrumbs = '';
@@ -93,15 +84,15 @@ class theme_bootstrap_core_renderer extends core_renderer {
     }
 
     public function custom_menu($custommenuitems = '') {
-    // The custom menu is always shown, even if no menu items
-    // are configured in the global theme settings page.
         global $CFG;
 
         if (!empty($CFG->custommenuitems)) {
             $custommenuitems .= $CFG->custommenuitems;
         }
+        //Growdly specific no custom menu items
+        $custommenuitems = "";
         $custommenu = new custom_menu($custommenuitems, current_language());
-        return $this->render_custom_menu($custommenu);
+        return $this->render_custom_menu($custommenu,"top");
     }
 
     protected function render_custom_menu(custom_menu $menu) {
@@ -125,14 +116,42 @@ class theme_bootstrap_core_renderer extends core_renderer {
     }
 
     protected function render_user_menu(custom_menu $menu) {
-        global $CFG, $USER, $DB;
+        global $CFG, $USER, $DB, $COURSE;
 
         $addusermenu = true;
         $addlangmenu = true;
+        $addcoursemenu = true;
         $addmessagemenu = false;
+        $recentactivitymenu = false;
 
         if (!isloggedin() || isguestuser()) {
             $addmessagemenu = false;
+            $addusermenu = false;
+        }
+
+        if ($addcoursemenu) {
+            if ($COURSE->id > 1) {
+                require_once($CFG->dirroot .'/course/lib.php');
+                $sectionmenu = $menu->add(get_string('jumpto'),
+                new moodle_url('#'), get_string('jumpto'), 12);
+                $modinfo = get_fast_modinfo($COURSE->id);
+                $sections = $modinfo->get_section_info_all();
+                $usessections = course_format_uses_sections($COURSE->format);
+                $course = course_get_format($COURSE)->get_course();
+                $numsections = $course->numsections;
+
+                if ($usessections && !empty($sections)) {
+                    for ($i = 0 ; $i <= $numsections; $i++ ) {
+                        if (isset($sections[$i])) {
+                            $sectionname = get_section_name($COURSE, $sections[$i]);
+                            $sectionname = core_text::substr($sectionname, 0, 15).'...';
+
+                            $sectionmenu->add($sectionname,
+                            new moodle_url('/course/view.php', array('id' => $COURSE->id), 'section-' . $i), $sectionname);
+                        }
+                    }
+                }
+            }
         }
 
         if ($addmessagemenu) {
@@ -185,25 +204,111 @@ class theme_bootstrap_core_renderer extends core_renderer {
 
         if ($addusermenu) {
             if (isloggedin()) {
-                $usermenu = $menu->add(fullname($USER), new moodle_url('#'), fullname($USER), 10001);
+                $userpicture = new user_picture($USER);
+                $userpicture->link = false;
+                $picture = $this->render($userpicture);
+                $userinfo = html_writer::tag('span', fullname($USER), array('class' => 'username'));
+                $usermenu = $menu->add($picture . $userinfo, new moodle_url('#'), fullname($USER), 10001);
                 $usermenu->add(
-                    '<span class="glyphicon glyphicon-off"></span>' . get_string('logout'),
-                    new moodle_url('/login/logout.php', array('sesskey' => sesskey(), 'alt' => 'logout')),
-                    get_string('logout')
-                );
-
-                $usermenu->add(
-                    '<span class="glyphicon glyphicon-user"></span>' . get_string('viewprofile'),
+                    '<i class="fa fa-user"></i>' . get_string('viewprofile'),
                     new moodle_url('/user/profile.php', array('id' => $USER->id)),
+
                     get_string('viewprofile')
                 );
 
                 $usermenu->add(
-                    '<span class="glyphicon glyphicon-cog"></span>' . get_string('editmyprofile'),
+                    '<i class="fa fa-cog"></i>' . get_string('editmyprofile'),
                     new moodle_url('/user/edit.php', array('id' => $USER->id)),
+
                     get_string('editmyprofile')
                 );
+
+                $usermenu->add(
+                    '<i class="fa fa-folder"></i>' . get_string('myfiles'),
+                    new moodle_url('/user/files.php'),
+                    get_string('myfiles')
+                );
+
+                // $usermenu->add(
+                //     '<i class="fa fa-inbox"></i>' . get_string('messages', 'message'),
+                //     new moodle_url('/message/index.php', array('viewing' => 'recentconversations')),
+
+                //     get_string('messages', 'message')
+                // );
+
+                // $usermenu->add(
+                //     '<i class="fa fa-cog"></i>' . get_string('messageoutputs', 'message'),
+                //     new moodle_url('/message/edit.php', array('viewing' => 'recentconversations')),
+
+                //     get_string('messages', 'message')
+                // );
+
+                // $usermenu->add(
+                //     '<i class="fa fa-calendar"></i>' . get_string('calendar', 'calendar'),
+                //     new moodle_url('/calendar/view.php', array('view' => 'month')),
+                //     get_string('calendar', 'calendar')
+                // );
+
+                $usermenu->add(
+                    '<i class="fa fa-lock"></i>' . get_string('logout'),
+                    new moodle_url('/login/logout.php', array('sesskey' => sesskey(), 'alt' => 'logout')),
+                    get_string('logout')
+                );
             } 
+        }
+
+
+
+        if ($recentactivitymenu) {
+        // Get the recent activity menu items.
+            $courses = enrol_get_my_courses(NULL, 'fullname ASC', '999');
+            $max_dropdown_courses = 15;
+            $countcourses = 0;
+            $menuitems = array();
+            $unread_activity = 0;
+
+            foreach ($courses as $mycourse) {
+                $thiscourse = $DB->get_record('course', array('id' => $mycourse->id));
+                ob_start();
+                $this->bootstrap_print_recent_activity($thiscourse);
+                $activity = ob_get_contents();
+                ob_end_clean();
+
+                if ($countcourses > $max_dropdown_courses ) {
+                    $courseactivity = new stdClass();
+                    $courseactivity->content = get_string('morecourses', 'theme_bootstrap');
+                    $courseactivity->url = new moodle_url('/my');
+                    $courseactivity->name = null;
+                    $menuitems[] = $courseactivity;
+                    break;
+                }
+
+                if (strlen($mycourse->fullname) > 80) {
+                    $coursename = substr($mycourse->fullname, 0, 80) . '..';
+                } else {
+                    $coursename = $mycourse->fullname;
+                }
+
+                $courseactivitycontent = $coursename . $activity;
+                if ($activity != '') {
+                    $courseactivity = new stdClass();
+                    $courseactivity->content = $courseactivitycontent;
+                    $courseactivity->url = new moodle_url('/course/view.php', array('id'=>$mycourse->id));
+                    $courseactivity->name = $mycourse->fullname;
+                    $menuitems[] = $courseactivity;
+                    //$mycourses->add($courseactivity, new moodle_url('/course/view.php', array('id'=>$mycourse->id)), $mycourse->fullname);
+                    $countcourses++;
+                    $unread_activity++;
+                }
+            }
+            if ($countcourses) {
+                $unread_messages_count = ' ' . html_writer::tag('span', $countcourses, array('class'=>'badge badge-warning'));
+                $mycourses = $menu->add(get_string('recentactivity') ,
+                new moodle_url('#recent'), get_string('recentactivity') . $unread_messages_count , 11);
+                foreach ($menuitems as $menuitem) {
+                    $mycourses->add($menuitem->content,$menuitem->url,$menuitem->name);
+                }
+            }
         }
 
         $content = '<ul class="nav navbar-nav navbar-right">';
@@ -370,6 +475,8 @@ class theme_bootstrap_core_renderer extends core_renderer {
             return html_writer::tag('li', $link);
         }
     }
+
+
     // protected function render_pix_icon(pix_icon $icon) {
     //     if ($this->page->theme->settings->fonticons === '1'
     //         && $icon->attributes["alt"] === ''
@@ -434,40 +541,229 @@ class theme_bootstrap_core_renderer extends core_renderer {
         }
     }
 
-    public function navbar_button_reader($dataid = '#region-main', $class = null) {
-        $icon = html_writer::tag('span', '' , array('class' => 'glyphicon glyphicon-zoom-in'));
-        $content = html_writer::link('#', $icon . ' ' . get_string('reader', 'theme_bootstrap'),
-            array('class' => 'btn btn-default navbar-btn btn-sm moodlereader pull-right ' . $class,
-                'dataid' => $dataid));
+    function bootstrap_print_recent_activity($course) {
+        // $course is an object
+        global $CFG, $USER, $SESSION, $DB, $OUTPUT;
+
+        $context = context_course::instance($course->id);
+
+        $viewfullnames = has_capability('moodle/site:viewfullnames', $context);
+
+        $timestart = round(time() - COURSE_MAX_RECENT_PERIOD, -2); // better db caching for guests - 100 seconds
+
+        if (!isguestuser()) {
+            if (!empty($USER->lastcourseaccess[$course->id])) {
+                if ($USER->lastcourseaccess[$course->id] > $timestart) {
+                    $timestart = $USER->lastcourseaccess[$course->id];
+                }
+            }
+        }
+
+
+        $content = false;
+
+        /// Firstly, have there been any new enrolments?
+
+        $users = get_recent_enrolments($course->id, $timestart);
+
+        //Accessibility: new users now appear in an <OL> list.
+        if ($users) {
+            echo '<div class="newusers">';
+            echo $OUTPUT->heading(get_string("newusers").':', 3);
+            $content = true;
+            echo "<ol class=\"list\">\n";
+            foreach ($users as $user) {
+                $fullname = fullname($user, $viewfullnames);
+                echo '<li class="name"><a href="'."$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id\">$fullname</a></li>\n";
+            }
+            echo "</ol>\n</div>\n";
+        }
+
+        /// Next, have there been any modifications to the course structure?
+
+        $modinfo = get_fast_modinfo($course);
+
+        $changelist = array();
+
+        $logs = $DB->get_records_select('log', "time > ? AND course = ? AND
+                                            module = 'course' AND
+                                            (action = 'add mod' OR action = 'update mod' OR action = 'delete mod')",
+        array($timestart, $course->id), "id ASC");
+
+        if ($logs) {
+            $actions  = array('add mod', 'update mod', 'delete mod');
+            $newgones = array(); // added and later deleted items
+            foreach ($logs as $key => $log) {
+                if (!in_array($log->action, $actions)) {
+                    continue;
+                }
+                $info = explode(' ', $log->info);
+
+                // note: in most cases I replaced hardcoding of label with use of
+                // $cm->has_view() but it was not possible to do this here because
+                // we don't necessarily have the $cm for it
+                if ($info[0] == 'label') {     // Labels are ignored in recent activity
+                    continue;
+                }
+
+                if (count($info) != 2) {
+                    debugging("Incorrect log entry info: id = ".$log->id, DEBUG_DEVELOPER);
+                    continue;
+                }
+
+                $modname    = $info[0];
+                $instanceid = $info[1];
+
+                if ($log->action == 'delete mod') {
+                    // unfortunately we do not know if the mod was visible
+                    if (!array_key_exists($log->info, $newgones)) {
+                        $strdeleted = get_string('deletedactivity', 'moodle', get_string('modulename', $modname));
+                        $changelist[$log->info] = array ('operation' => 'delete', 'text' => $strdeleted);
+                    }
+                } else {
+                    if (!isset($modinfo->instances[$modname][$instanceid])) {
+                        if ($log->action == 'add mod') {
+                            // do not display added and later deleted activities
+                            $newgones[$log->info] = true;
+                        }
+                        continue;
+                    }
+                    $cm = $modinfo->instances[$modname][$instanceid];
+                    if (!$cm->uservisible) {
+                        continue;
+                    }
+
+                    if ($log->action == 'add mod') {
+                        $stradded = get_string('added', 'moodle', get_string('modulename', $modname));
+                        $changelist[$log->info] = array('operation' => 'add', 'text' => "$stradded:<br /><a href=\"$CFG->wwwroot/mod/$cm->modname/view.php?id={$cm->id}\">".format_string($cm->name, true)."</a>");
+
+                    } else if ($log->action == 'update mod' and empty($changelist[$log->info])) {
+                        $strupdated = get_string('updated', 'moodle', get_string('modulename', $modname));
+                        $changelist[$log->info] = array('operation' => 'update', 'text' => "$strupdated:<br /><a href=\"$CFG->wwwroot/mod/$cm->modname/view.php?id={$cm->id}\">".format_string($cm->name, true)."</a>");
+                    }
+                }
+            }
+        }
+
+        if (!empty($changelist)) {
+            $content = true;
+            foreach ($changelist as $changeinfo => $change) {
+                echo '<p class="activity">'.$change['text'].'</p>';
+            }
+        }
+
+        /// Now display new things from each module
+
+        $usedmodules = array();
+        foreach($modinfo->cms as $cm) {
+            if (isset($usedmodules[$cm->modname])) {
+                continue;
+            }
+            if (!$cm->uservisible) {
+                continue;
+            }
+            $usedmodules[$cm->modname] = $cm->modname;
+        }
+
+        foreach ($usedmodules as $modname) {      // Each module gets it's own logs and prints them
+            if (file_exists($CFG->dirroot.'/mod/'.$modname.'/lib.php')) {
+                include_once($CFG->dirroot.'/mod/'.$modname.'/lib.php');
+                $print_recent_activity = $modname.'_print_recent_activity';
+                if (function_exists($print_recent_activity)) {
+                    // NOTE: original $isteacher (second parameter below) was replaced with $viewfullnames!
+                    $content = $print_recent_activity($course, $viewfullnames, $timestart) || $content;
+                }
+            } else {
+                debugging("Missing lib.php in lib/{$modname} - please reinstall files or uninstall the module");
+            }
+        }
+    }
+
+    public function bootstrap_footer_widget($i) {
+
+        $title = 'footertitle' . $i;
+        $text = 'footertext' . $i;
+
+        $content = html_writer::start_tag('div',  array('class' => 'footerwidget'));
+        if (isset($this->page->theme->settings->$title)) {
+            $headingtitle = html_writer::tag('span', $this->page->theme->settings->$title);
+            $content .= html_writer::tag('h4', $headingtitle, array('class' => 'footerheading'));
+        }
+        if (isset($this->page->theme->settings->$text)) {
+            $content .= html_writer::start_tag('div',  array('class' => 'footertext'));
+            $content .= $this->page->theme->settings->$text;
+            if ($i == 3) {
+                $content .= '<br>'. $this->page_doc_link();
+                $content .= $this->course_footer();
+                $content .= $this->standard_footer_html();
+            }
+            $content .= html_writer::end_tag('div');
+
+        }
+        $content .= html_writer::end_tag('div');
+
         return $content;
     }
 
-    public function box($contents, $classes = 'generalbox', $id = null, $attributes = array()) {
-        if (isset($attributes['data-rel']) && $attributes['data-rel'] === 'fatalerror') {
-            return html_writer::div($contents, 'alert alert-danger', $attributes);
+    public function bootstrap_calltoaction($container) {
+        if (isset($this->page->theme->settings->calltoactiontext) &&
+            isset($this->page->theme->settings->calltoactionlinktext) &&
+            isset($this->page->theme->settings->calltoactionlink)) {
+            $calltoactiontext = $this->page->theme->settings->calltoactiontext;
+            $calltoactionlinktext = $this->page->theme->settings->calltoactionlinktext;
+            $calltoactionlink = $this->page->theme->settings->calltoactionlink;
+        } else {
+            return '';
         }
-        return parent::box($contents, $classes, $id, $attributes);
+        $content = '';
+        $content .= html_writer::start_tag('div',  array('class' => $container));
+        $content .= html_writer::start_tag('div',  array('class' => 'row calltoaction'));
+        $content .= html_writer::start_tag('div',  array('class' => 'contenttext col-md-8 col-md-push-1'));
+        $content .= html_writer::tag('span', $calltoactiontext, array('class' => 'calltoactiontext'));
+        $content .= html_writer::end_tag('div');
+        $content .= html_writer::start_tag('div',  array('class' => 'contentlink col-md-2 col-md-push-1'));
+        $content .= html_writer::link($calltoactionlink, $calltoactionlinktext, array('class' => 'calltoactionlink'));
+        $content .= html_writer::end_tag('div');
+        $content .= html_writer::end_tag('div');
+        $content .= html_writer::end_tag('div');
+        return $content;
     }
-    
-    public function iomadhead() {
-        global $SESSION, $SITE, $USER;
 
-        
-        if (!empty($SESSION->currenteditingcompany)) {
-            $selectedcompany = $SESSION->currenteditingcompany;
-        } else if (!empty($USER->profile->company)) {
-            $usercompany = company::by_userid($USER->id);
-            $selectedcompany = $usercompany->id;
+    public function bootstrap_quote () {
+        if (isset($this->page->theme->settings->quotes)) {
+            $quotes = $this->page->theme->settings->quotes;
         } else {
-            $selectedcompany = "";
+            return '';
         }
+        $quote_lines = preg_split('/\r\n|\r|\n/', $quotes);
+        $quote_count = count($quote_lines);
+        return $quote_lines[rand(0,$quote_count -1)];
+    }
 
-        // Get the company name if set.
-        if (!empty($selectedcompany)) {
-            $companyname = company::get_companyname_byid($selectedcompany);
-        } else {
-            $companyname = $SITE->shortname;
+    public function bootstrap_nocourses() {
+        global $DB, $USER;
+        $content = '';
+        if (!isloggedin()) {
+            return '';
         }
-        return $companyname;
+        if (is_siteadmin()) {
+            return '';
+        }
+        if (isset($this->page->theme->settings->nocourses)) {
+            $nocourses = $this->page->theme->settings->nocourses;
+        } else {
+            return '';
+        }
+        $enrolled = enrol_get_my_courses();
+        if (!$enrolled) {
+            if (!$cm = get_coursemodule_from_id('page', $nocourses)) {
+                print_error('invalidcoursemodule');
+            }
+            if ($page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST)) {
+                $content .= html_writer::tag('h2', $page->name);
+                $content .= html_writer::tag('div',$page->content, array('class' => "box generalbox center clearfix"));
+                return $content;
+            }
+        }
     }
 }

@@ -28,193 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/local/iomad/lib/user.php');
 require_once($CFG->dirroot.'/local/iomad/lib/iomad.php');
 
-/**
- * Parses CSS before it is cached.
- *
- * This function can make alterations and replace patterns within the CSS.
- *
- * @param string $css The CSS
- * @param theme_config $theme The theme config object.
- * @return string The parsed CSS The parsed CSS.
- */
-function theme_bootstrap_process_css($css, $theme) {
-
-    $settings = get_object_vars($theme->settings);
-
-    $css = theme_bootstrap_delete_css($settings, $css);
-
-    $settings['brandcss'] = theme_bootstrap_brand_font_css($settings);
-
-    return theme_bootstrap_replace_settings($settings, $css);
-}
-
-/**
- * Serves any files associated with the theme settings.
- *
- * @param stdClass $course
- * @param stdClass $cm
- * @param context $context
- * @param string $filearea
- * @param array $args
- * @param bool $forcedownload
- * @param array $options
- * @return bool
- */
-function theme_bootstrap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
-
-    $fs = get_file_storage();
-    $relativepath = implode('/', $args);
-    $filename = $args[1];
-    $itemid = $args[0];
-    if ($filearea == 'logo') {
-        $itemid = 0;
-    }
-
-    if (!$file = $fs->get_file($context->id, 'theme_bootstrap', $filearea, $itemid, '/', $filename) or $file->is_directory()) {
-        send_file_not_found();
-    }
-
-    send_stored_file($file, 0, 0, $forcedownload);
-}
-
-function theme_bootstrap_delete_css($settings, $css) {
-    if ($settings['deletecss'] == true) {
-        $find[] = '/-webkit-border-radius:[^;]*;/';
-        $find[] = '/-webkit-box-shadow:[^;]*;/';
-        $find[] = '/-moz-border-radius:[^;]*;/';
-        $find[] = '/-moz-box-shadow:[^;]*;/';
-        return preg_replace($find, '', $css);
-    } else {
-        return $css;
-    }
-}
-
-/**
- * For each setting called e.g. "customcss" this looks for the string
- * "[[setting:customcss]]" in the CSS and replaces it with
- * the value held in the $settings array for the key
- * "customcss".
- *
- * @param array $settings containing setting names and values
- * @param string $css The CSS
- * @return string The CSS with replacements made
- */
-function theme_bootstrap_replace_settings($settings, $css) {
-    foreach ($settings as $name => $value) {
-        $find[] = "[[setting:$name]]";
-        $replace[] = $value;
-    }
-    return str_replace($find, $replace, $css);
-}
-
-function theme_bootstrap_brand_font_css($settings) {
-    $fontname = $settings['brandfont'];
-    if ($fontname === '') {
-        return '';
-    }
-    $fontweight = $settings['brandfontweight'];
-    return ".navbar-default .navbar-brand,
-            .navbar-inverse .navbar-brand {
-                font-family: $fontname, serif;
-                font-weight: $fontweight;
-            }";
-}
-
-/**
- * This function creates the dynamic HTML needed for the 
- * layout and then passes it back in an object so it can
- * be echo'd to the page.
- *
- * This keeps the logic out of the layout files.
- */
-function theme_bootstrap_html_for_settings($PAGE) {
-    global $CFG, $DB, $USER, $SITE;
-
-    $settings = $PAGE->theme->settings;
-
-    $html = new stdClass;
-
-    if ($settings->inversenavbar == true) {
-        $html->navbarclass = 'navbar navbar-inverse';
-    } else {
-        $html->navbarclass = 'navbar navbar-default';
-    }
-
-    $fluid = (!empty($PAGE->layout_options['fluid']));
-    if ($fluid || $settings->fluidwidth == true) {
-        $html->containerclass = 'container-fluid';
-    } else {
-        $html->containerclass = 'container';
-    }
-
-    $html->brandfontlink = theme_bootstrap_brand_font_link($settings);
-
-    // get logos
-    $theme = $PAGE->theme;
-    $logo = $theme->setting_file_url('logo', 'logo');
-    if (empty($logo)) {
-        $logo = $CFG->wwwroot.'/theme/iomad/pix/iomad_logo.png';
-    }
-    $clientlogo = '';
-    $companycss = '';
-    if ($companyid = iomad::is_company_user()) {
-        $context = context_system::instance();
-        if ($files = $DB->get_records('files', array('contextid' => $context->id,
-                                                     'component' => 'theme_iomad',
-                                                     'filearea' => 'companylogo',
-                                                     'itemid' => $companyid))) {
-            foreach ($files as $file) {
-                if ($file->filename != '.') {
-                    $clientlogo = $CFG->wwwroot . "/pluginfile.php/{$context->id}/theme_iomad/companylogo/$companyid/{$file->filename}";
-                }
-            }
-        }
-        company_user::load_company();
-        $companycss = ".header, .navbar { background: [[company:bgcolor_header]]; }
-                       .block .content { background: [[company:bgcolor_content]]; }";
-        foreach($USER->company as $key => $value) {
-            if (isset($value)) {
-                $companycss = preg_replace("/\[\[company:$key\]\]/", $value, $companycss);
-            }
-        }
-    }
-
-    $html->heading = '<div id="sitelogo">' . 
-        '<a href="' . $CFG->wwwroot . '" ><img src="' . $logo . '" /></a></div>';
-    $html->heading .= '<div id="siteheading"><span>' . $SITE->fullname . '</span></div>';
-    if ($clientlogo) {
-        $html->heading .= '<div id="clientlogo">' . 
-            '<a href="' . $CFG->wwwroot . '" ><img src="' . $clientlogo . '" /></a></div>';
-    }
-
-    $html->footnote = '';
-    if (!empty($page->theme->settings->footnote)) {
-        $html->footnote = '<div class="footnote text-center">'.$PAGE->theme->settings->footnote.'</div>';
-    }
-
-    $html->companycss = $companycss;
-
-    return $html;
-}
-
-function theme_bootstrap_brand_font_link($settings) {
-    global $SITE;
-    $fontname = $settings->brandfont;
-    if ($fontname === '') {
-        return '';
-    }
-    $fontname = urlencode($fontname);
-    $text = urlencode(str_replace(' ', '', $SITE->shortname));
-    $fontweight = $settings->brandfontweight;
-    $fontitalic = '';
-    if ($settings->brandfontitalic == true) {
-        $fontitalic = 'italic';
-    }
-    return '<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family='
-            .$fontname.':'.$fontweight.$fontitalic.'&amp;text='.$text.'">';
-}
-
 function bootstrap_grid($hassidepre, $hassidepost) {
+
     if ($hassidepre && $hassidepost) {
         $regions = array('content' => 'col-sm-6 col-sm-push-3 col-lg-8 col-lg-push-2');
         $regions['pre'] = 'col-sm-3 col-sm-pull-6 col-lg-2 col-lg-pull-8';
@@ -235,32 +50,235 @@ function bootstrap_grid($hassidepre, $hassidepost) {
     return $regions;
 }
 
-function theme_bootstrap_initialise_reader(moodle_page $page) {
-    $page->requires->yui_module('moodle-theme_bootstrap-reader', 'M.theme_bootstrap.initreader', array());
+
+function theme_bootstrap_select($setting, $default='0', $a = null, $choices) {
+    list($name, $title, $description) = theme_bootstrap_setting_details($setting, $a);
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    return $setting;
 }
 
-/* bootstrap_process_company_css  - Processes perficio specific tags in CSS files
+function theme_bootstrap_checkbox($setting, $default='0', $a = null) {
+    list($name, $title, $description) = theme_bootstrap_setting_details($setting, $a);
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    return $setting;
+}
+
+function theme_bootstrap_textarea($setting, $default='', $a = null) {
+    list($name, $title, $description) = theme_bootstrap_setting_details($setting, $a);
+    $setting = new admin_setting_configtextarea($name, $title, $description, $default);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    return $setting;
+}
+
+function theme_bootstrap_text($setting, $default='', $a = null) {
+    list($name, $title, $description) = theme_bootstrap_setting_details($setting, $a);
+    return new admin_setting_configtext($name, $title, $description, $default);
+}
+
+function theme_bootstrap_image($setting, $default='', $a = null) {
+    list($name, $title, $description) = theme_bootstrap_setting_details($setting, $a);
+    return new admin_setting_configstoredfile($name, $title, $description, $setting.$a);
+}
+
+function theme_bootstrap_setting_details($setting, $a = null) {
+    $theme = "theme_bootstrap";
+    $name = "$theme/$setting$a";
+    $title = get_string($setting, $theme, $a);
+    $description = get_string($setting.'desc', $theme, $a);
+    return array($name, $title, $description);
+}
+
+function theme_bootstrap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+    if ($context->contextlevel == CONTEXT_SYSTEM) {
+        $theme = theme_config::load('bootstrap');
+        if (preg_match('/slideimage\d+/', $filearea)) {
+            return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
+        } else if (preg_match('/backimages\d+/', $filearea)) {
+            return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
+        } else if (preg_match('/logo/', $filearea)) {
+            return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
+        } else {
+            send_file_not_found();
+        }
+    } else {
+        send_file_not_found();
+    }
+}
+
+/**
+ * Parses CSS before it is cached.
  *
- * [[logo]] gets replaced with the full url to the company logo
- * [[company:$property]] gets replaced with the property of the $USER->company object
- *     available properties are: id, shortname, name, logo_filename + the fields in company->cssfields, currently  bgcolor_header and bgcolor_content
+ * This function can make alterations and replace patterns within the CSS.
  *
+ * @param string $css The CSS
+ * @param theme_config $theme The theme config object.
+ * @return string The parsed CSS The parsed CSS.
  */
-function theme_bootstrap_process_company_css($css, $theme) {
-    global $USER;
+function theme_bootstrap_process_css($css, $theme) {
 
-    company_user::load_company();
+    $defaultsettings = array(
+        'customcss' => '',
+    );
 
-    if (isset($USER->company)) {
-        // replace company properties
-        foreach($USER->company as $key => $value) {
-            if (isset($value)) {
-                $css = preg_replace("/\[\[company:$key\]\]/", $value, $css);
+    $settings = theme_bootstrap_get_user_settings($defaultsettings, $theme);
+
+    return theme_bootstrap_replace_settings($settings, $css);
+}
+
+/**
+ * Parses CSS before it is cached.
+ *
+ * This function can make alterations and replace patterns within the CSS.
+ *
+ * @param array $settings containing setting names and default values
+ * @param theme_config $theme The theme config object.
+ * @return array The setting with defaults replaced with user settings (if any)
+ */
+function theme_bootstrap_get_user_settings($settings, $theme) {
+    foreach (array_keys($settings) as $setting) {
+        if (!empty($theme->settings->$setting)) {
+            $settings[$setting] = $theme->settings->$setting;
+        }
+    }
+    return $settings;
+}
+
+/**
+ * For each setting called e.g. "customcss" this looks for the string
+ * "[[setting:customcss]]" in the CSS and replaces it with
+ * the value held in the $settings array for the key
+ * "customcss".
+ *
+ * @param array $settings containing setting names and values
+ * @param string $css The CSS
+ * @return string The CSS with replacements made
+ */
+function theme_bootstrap_replace_settings($settings, $css) {
+    $settingnames = array_keys($settings);
+
+    $wrapsettings = function($name) {
+        return "[[setting:$name]]";
+    };
+
+    $find = array_map($wrapsettings, $settingnames);
+    $replace = array_values($settings);
+
+    return str_replace($find, $replace, $css);
+}
+
+function theme_bootstrap_page_background($PAGE) {
+
+    $hasbackgroundimages = (!empty($PAGE->theme->settings->backnumber));
+    if ($hasbackgroundimages) {
+        $backgroundimages = $PAGE->theme->settings->backnumber;
+    } else {
+        return 'NO';
+    }
+
+    if ($backgroundimages == 1) {
+        $image = $PAGE->theme->setting_file_url('backimages1' , 'backimages1');
+        return '<script>
+                $.backstretch("'.$image.'");
+                </script>';
+    } else {
+        $content = '<script> $.backstretch([';
+        for ($i = 1 ; $i <= $backgroundimages; $i++) {
+            if ($image = $PAGE->theme->setting_file_url('backimages' . $i , 'backimages' . $i)) {
+                $content .= '"' . $image . '"'. ",\n"; 
             }
         }
-
+        $content .= '] ,{duration: 10000, fade: 750}); </script>';
+        return $content;
     }
-    return $css;
-
 }
 
+function theme_bootstrap_get_html_for_settings(renderer_base $output, moodle_page $page) {
+    global $CFG, $USER, $DB;
+    $return = new stdClass;
+
+    $hascompanyid = optional_param('cpid', 0, PARAM_INT);
+    $context = context_system::instance();
+    // get logos
+    $theme = $page->theme;
+    $logo = $theme->setting_file_url('logo', 'logo');
+    if (empty($logo)) {
+        $logo = $output->pix_url('logo', 'theme');
+    }
+    $return->heading = $logo;
+    $companycss = '';
+
+    $bgcolor_header = false;
+    $bgcolor_content = false;
+
+
+    if ($hascompanyid) {
+        if ($company = $DB->get_record('company', array('id' => $hascompanyid))) {
+            $bgcolor_header = $company->bgcolor_header;
+            $bgcolor_content = $company->bgcolor_content;
+        };
+        if ($files = $DB->get_records('files', array('contextid' => $context->id, 'component' => 'theme_iomad', 'filearea' => 'companylogo', 'itemid' => $hascompanyid))) {
+            foreach ($files as $file) {
+                if ($file->filename != '.') {
+                    $clientlogo = $CFG->wwwroot . "/pluginfile.php/{$context->id}/theme_iomad/companylogo/$hascompanyid/{$file->filename}";
+                    $return->heading =  $clientlogo;
+                }
+            }
+        }
+    }
+
+    if ($companyid = iomad::is_company_user()) {
+        if ($files = $DB->get_records('files', array('contextid' => $context->id, 'component' => 'theme_iomad', 'filearea' => 'companylogo', 'itemid' => $companyid))) {
+            foreach ($files as $file) {
+                if ($file->filename != '.') {
+                    $clientlogo = $CFG->wwwroot . "/pluginfile.php/{$context->id}/theme_iomad/companylogo/$companyid/{$file->filename}";
+                    $return->heading =  $clientlogo;
+                }
+            }
+        }
+        company_user::load_company();
+        $bgcolor_header = $USER->company->bgcolor_header;
+        $bgcolor_content = $USER->company->bgcolor_content;
+    }
+
+
+    if (isset($bgcolor_header)) {
+        $companycss .= '.growdlyheader { background-color: '.$bgcolor_header.' ; }';
+        $companycss .= 'a, a:hover, a:focus { color: '.$bgcolor_header.' ; }';
+        $companycss .= '.block_settings .block_tree .collapsed .tree_item.branch a:before, .block_navigation .block_tree .collapsed .tree_item.branch a:before, .block_settings .block_tree .collapsed .tree_item.branch span:before, .block_navigation .block_tree .collapsed .tree_item.branch span:before, .block_settings .block_tree .collapsed .tree_item.emptybranch a:before, .block_navigation .block_tree .collapsed .tree_item.emptybranch a:before, .block_settings .block_tree .collapsed .tree_item.emptybranch span:before, .block_navigation .block_tree .collapsed .tree_item.emptybranch span:before, .block_settings .block_tree .contains_branch .tree_item.emptybranch a:before, .block_navigation .block_tree .contains_branch .tree_item.emptybranch a:before, .block_settings .block_tree .contains_branch .tree_item.emptybranch span:before, .block_navigation .block_tree .contains_branch .tree_item.emptybranch span:before, .block_settings .block_tree .contains_branch .tree_item.branch a:before, .block_navigation .block_tree .contains_branch .tree_item.branch a:before, .block_settings .block_tree .contains_branch .tree_item.branch span:before, .block_navigation .block_tree .contains_branch .tree_item.branch span:before {
+            color: '.$bgcolor_header.' ;
+        }';
+        $companycss .= '.block_settings .block_tree li p.active_tree_node, .block_navigation .block_tree li p.active_tree_node, .block_settings .block_tree li p.active_tree_node:hover, .block_navigation .block_tree li p.active_tree_node:hover {
+            background-color: '.$bgcolor_header.' ;
+        }';
+        $companycss .= '.block_settings .block_tree li p:hover, .block_navigation .block_tree li p:hover, .block_settings .block_tree li p:active, .block_navigation .block_tree li p:active, .block_settings .block_tree li p:focus, .block_navigation .block_tree li p:focus {
+            background-color: '.$bgcolor_header.' ;
+        }';
+        $companycss .= '.block .minicalendar td.weekend {
+            color: '.$bgcolor_header.' ;
+        }';
+        $companycss .= '.iomadlink_container .iomadlink .iomadicon .fa-action {
+            background-color: '.$bgcolor_header.' ;
+        }';
+        $companycss .= '.mform fieldset.collapsible legend a.fheader:hover, .mform legend.ftoggler:hover, .mform fieldset.collapsible legend a.fheader:active, .mform legend.ftoggler:active {
+            color: '.$bgcolor_header.' ;
+        }';
+        $companycss .= 'input.form-submit, input#id_submitbutton, input#id_submitbutton2, .path-admin .buttons input[type="submit"], td.submit input, input.form-submit:hover, input#id_submitbutton:hover, input#id_submitbutton2:hover, .path-admin .buttons input[type="submit"]:hover, td.submit input:hover, input.form-submit:focus, input#id_submitbutton:focus, input#id_submitbutton2:focus, .path-admin .buttons input[type="submit"]:focus, td.submit input:focus, input.form-submit:active, input#id_submitbutton:active, input#id_submitbutton2:active, .path-admin .buttons input[type="submit"]:active, td.submit input:active, input.form-submit.active, input#id_submitbutton.active, input#id_submitbutton2.active, .path-admin .buttons input[type="submit"].active, td.submit input.active, .open .dropdown-toggleinput.form-submit, .open .dropdown-toggleinput#id_submitbutton, .open .dropdown-toggleinput#id_submitbutton2, .open .dropdown-toggle.path-admin .buttons input[type="submit"], .open .dropdown-toggletd.submit input {
+            background-color: '.$bgcolor_header.' ;
+            border-color: '.$bgcolor_header.' ;
+        }';
+    }
+    if (isset($bgcolor_content)) {
+            $companycss .= 'body { background-color: '.$bgcolor_content.' ; }';
+    }
+
+    $return->footnote = '';
+    if (!empty($page->theme->settings->footnote)) {
+        $return->footnote = '<div class="footnote text-center">'.$page->theme->settings->footnote.'</div>';
+    }
+
+    $return->companycss = $companycss;
+
+    return $return;
+}

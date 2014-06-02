@@ -26,4 +26,5 @@
 
 $plugins = array(
     'bootstrap' => array('files' => array('bootstrap-3_1_1.js')),
+    'backstrech'     => array('files' => array('backstretch-2.0.4.js')),
 );

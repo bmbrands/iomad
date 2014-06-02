@@ -21,48 +21,58 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['brandfont'] = 'Logotype Font';
-$string['brandfontdesc'] = 'The name of a Google Font to use for the site name in the navbar';
-$string['brandfontitalic'] = 'Logotype Italics';
-$string['brandfontitalicdesc'] = 'Use the italic version of the font, check italic is available at the selected weight';
-$string['brandfontweight'] = 'Logotype Weight';
-$string['brandfontweightdesc'] = 'Weight of the font, 400 is normal, 700 bold, double check what weights the font supports';
-$string['customcss'] = 'Custom CSS';
-$string['customcssdesc'] = 'Whatever CSS rules you add to this textarea will be reflected in every page, making for easier customization of this theme.';
-$string['deletecss'] = 'Delete Unneeded CSS';
-$string['deletecssdesc'] = 'Delete CSS for webkit and moz specific rules that are no longer necessary';
-$string['fluidwidth'] = 'Fluid width theme';
-$string['fluidwidthdesc'] = 'Enable this option to allow using your full screen';
-$string['fonticons'] = 'Use Icon Font';
-$string['fonticonsdesc'] = 'Enable this option to use the Glyphicon Icon Font';
-$string['fontweight100'] = '100 (thin)';
-$string['fontweight200'] = '200';
-$string['fontweight300'] = '300 (light)';
-$string['fontweight400'] = '400 (normal)';
-$string['fontweight500'] = '500';
-$string['fontweight600'] = '600';
-$string['fontweight700'] = '700 (bold)';
-$string['fontweight800'] = '800';
-$string['fontweight900'] = '900 (ultra-bold)';
-$string['footerwidget'] = 'Footer Widget #{$a}';
-$string['footerwidgetdesc'] = 'All footer widgets have the same description';
-$string['inversenavbar'] = 'Inverse Navbar';
-$string['inversenavbardesc'] = 'Enable this option to use the inverted color scheme for the navbar';
-$string['logo'] = 'Site Logo';
-$string['logodesc'] = 'Please upload your custom logo here if you want to add it to the header.<br>
-If the height of your logo is more than 75px add the following CSS rule to the Custom CSS box below.<br>
-a.logo {height: 100px;} or whatever height in pixels the logo is.';
-
 $string['pluginname'] = 'Bootstrap 3';
-$string['reader'] = 'Reader';
 $string['region-side-post'] = 'Right';
 $string['region-side-pre'] = 'Left';
 $string['region-page-top'] = 'Top';
-
-
+$string['backnumber'] = 'Number of Background images';
+$string['backnumberdesc'] = 'Number of Background images to use';
+$string['backimages'] = 'Login Background Image';
+$string['backimagesdesc'] = 'Upload a Login Background Images';
+$string['calltoactiontext'] = 'Call to action text';
+$string['calltoactiontextdesc'] = 'Provide your custom call to action text';
+$string['calltoactionlinktext'] = 'Call to action link text';
+$string['calltoactionlinktextdesc'] = 'Provide the name of the link shown in the call to action bar';
+$string['calltoactionlink'] = 'Call to action link';
+$string['calltoactionlinkdesc'] = 'Provide the URL of the call to action link';
+$string['customcss'] = 'Custom CSS';
+$string['customcssdesc'] = 'Whatever CSS rules you add to this textarea will be reflected in every page, making for easier customization of this theme.';
+$string['fonticons'] = 'Use Icon Font';
+$string['fonticonsdesc'] = 'Enable this option to use the Glyphicon Icon Font';
+$string['fluidwidth'] = 'Fluid width theme';
+$string['fluidwidthdesc'] = 'Enable this option to allow using your full screen';
+$string['inversenavbar'] = 'Inverse Navbar';
+$string['inversenavbardesc'] = 'Enable this option to use the inverted color scheme for the navbar';
+$string['quotes'] = 'Learning Quotes';
+$string['morecourses'] = 'More Courses';
+$string['quotesdesc'] = 'Enter Learning quotes of no longer than 10 words, each on its own line';
+$string['footertitle'] = 'Footer {$a} Title';
+$string['footertitledesc'] = 'Title of textblock to be added to the footer of the page';
+$string['footertext'] = 'Footer {$a} Text';
+$string['footertextdesc'] = 'Text of textblock to be added to the footer of the page';
+$string['sliderenabled'] = 'Slider Enabled';
+$string['sliderenableddesc'] = 'Toggle Slider on or off';
+$string['slidenumber'] = 'Number of slides';
+$string['slidenumberdesc'] = 'After updating the number of slides save changes, after saving new slide configuration boxes will appear';
+$string['slideenabled'] = 'Slide {$a} enabled';
+$string['slideenableddesc'] = 'Toggle this slide on/off';
+$string['slidetitle'] = 'Slide {$a} Title';
+$string['slidetitledesc'] = 'Title of Slide Used as slide header';
+$string['slidetext'] = 'Slide {$a} Text';
+$string['slidetextdesc'] = 'Text of textblock on slide {$a}';
+$string['slidelink'] = 'Slide {$a} Link';
+$string['slidelinkdesc'] = 'Optional link for a More info button';
+$string['slidelinktitle'] = 'Slide {$a} Link Title';
+$string['slidelinktitledesc'] = 'Link title for button';
+$string['slideimage'] = 'Slide {$a} backupground image';
+$string['slideimagedesc'] = 'Upload a background image to be used for slide {$a}, optimal dimentions are: 1100px x 450px';
+$string['logo'] = 'Site logo';
+$string['nocourses'] = 'Moodle page id';
+$string['nocoursesdesc'] = 'Idnumber of page for students that have not been assigned to a course';
+$string['logodesc'] = 'Upload your site logo';
 $string['choosereadme'] = '
 <div class="clearfix"><div class="theme_screenshot"><h2>Bootstrap Base</h2>
-<img class=img-polaroid src="bootstrap/pix/screenshot.jpg" />
+<img class=img-polaroid src="bootstrap/pix/screenshot.png" />
 <h3>Theme Credits</h3>
 <p>
 <h3>Moodle Bootstrap 3 theme</h3>
@@ -83,15 +93,12 @@ Feel free to modify / improve / share
 </p>
 <p>
 This theme has been created with the help of:
-Joby Harding, Gareth J Barnard and brought under Iomad by Derick Turner.
+Joby Harding, Gareth J Barnard.
 </p>
 <p>
-Original Authors: Bas Brands, David Scotson<br>
+Authors: Bas Brands, David Scotson<br>
 Contact: bas@sonsbeekmedia.nl<br>
 Website: <a href="http://www.basbrands.nl">www.basbrands.nl</a><br>
-Iomad-fied by: Derick Turner</br>
-Contact: derick@e-learndesign.co.uk</br>
-Website: <a href="http://www.e-learndesign.co.uk">www.e-learndesign.co.uk</a></br>
 </p>
 
 <h3>Reporting bugs</h3>

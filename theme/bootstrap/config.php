@@ -29,9 +29,9 @@ $THEME->yuicssmodules = array();
 $THEME->name = 'bootstrap';
 $THEME->parents = array();
 if ('ltr' === get_string('thisdirection', 'langconfig')) {
-    $THEME->sheets = array('company', 'iomad', 'moodle', 'custom');
+    $THEME->sheets = array('moodle', 'custom');
 } else {
-    $THEME->sheets = array('company', 'iomad', 'moodle-rtl', 'tinymce-rtl', 'yui2-rtl', 'forms-rtl', 'custom');
+    $THEME->sheets = array('moodle-rtl', 'tinymce-rtl', 'yui2-rtl', 'forms-rtl', 'custom');
 }
 $THEME->supportscssoptimisation = false;
 
@@ -40,7 +40,9 @@ $THEME->editor_sheets = array('editor');
 $THEME->plugins_exclude_sheets = array(
     'block' => array(
         'html',
-        'search_forums'
+        'search_forums',
+        'settings',
+        'navigation'
     ),
     'tool' => array(
         'customlang'
@@ -65,9 +67,9 @@ $THEME->layouts = array(
     // Main course page.
     'course' => array(
         'file' => 'default.php',
-        'regions' => array('side-pre', 'side-post'),
+        'regions' => array('side-pre', 'side-post','page-top'),
         'defaultregion' => 'side-pre',
-        'options' => array('langmenu' => true),
+        'options' => array('langmenu' => true, 'whitebg' => true, 'moodleheader' => true),
     ),
     'coursecategory' => array(
         'file' => 'default.php',
@@ -77,27 +79,28 @@ $THEME->layouts = array(
     // Part of course, typical for modules - default page layout if $cm specified in require_login().
     'incourse' => array(
         'file' => 'default.php',
-        'regions' => array('side-pre', 'side-post'),
+        'regions' => array('side-pre', 'side-post','page-top'),
         'defaultregion' => 'side-pre',
-        'options' => array('usereader' => true),
+        'options' => array('whitebg' => true,  'moodleheader' => true),
     ),
     // The site home page.
     'frontpage' => array(
         'file' => 'default.php',
-        'regions' => array('side-pre', 'side-post'),
+        'regions' => array('side-pre', 'side-post','page-top'),
         'defaultregion' => 'side-pre',
-        'options' => array('nonavbar' => true),
+        'options' => array('nonavbar' => true,'nofixedbackground' => true, 'widgets' => true, 'banner' => true, 'nocoursesmsg' => true),
     ),
     // Server administration scripts.
     'admin' => array(
         'file' => 'default.php',
         'regions' => array('side-pre', 'page-top'),
         'defaultregion' => 'side-pre',
+        'options' => array('whitebg' => true),
     ),
     // My dashboard page.
     'mydashboard' => array(
         'file' => 'default.php',
-        'regions' => array('side-pre', 'page-top'),
+        'regions' => array('side-pre', 'side-post', 'page-top'),
         'defaultregion' => 'side-pre',
         'options' => array('langmenu' => true),
     ),
@@ -110,7 +113,7 @@ $THEME->layouts = array(
     'login' => array(
         'file' => 'default.php',
         'regions' => array(),
-        'options' => array('langmenu' => true, 'nonavbar' => true),
+        'options' => array('langmenu' => true, 'nonavbar' => true, 'backimage' => true, 'oauth' => true),
     ),
 
     // Pages that appear in pop-up windows - no navigation, no blocks, no header.
@@ -153,7 +156,6 @@ $THEME->layouts = array(
         'file' => 'default.php',
         'regions' => array('side-pre'),
         'defaultregion' => 'side-pre',
-        'options' => array('usereader' => true),
     ),
     // The pagelayout used for safebrowser and securewindow.
     'secure' => array(
@@ -167,14 +169,11 @@ $THEME->rarrow  = '';
 $THEME->javascripts = array(
 );
 $THEME->javascripts_footer = array(
-    'reader',
 );
-
-
-
 
 if (core_useragent::is_ie() && !core_useragent::check_ie_version('9.0')) {
     $THEME->javascripts[] = 'html5shiv';
+    $THEME->javascripts[] = 'respond.min';
 }
 
 $THEME->hidefromselector = false;

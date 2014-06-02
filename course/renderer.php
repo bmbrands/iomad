@@ -1387,8 +1387,8 @@ class core_course_renderer extends plugin_renderer_base {
             } else if ($viewmoreurl = $chelper->get_courses_display_option('viewmoreurl')) {
                 // the option for 'View more' link was specified, display more link
                 $viewmoretext = $chelper->get_courses_display_option('viewmoretext', new lang_string('viewmore'));
-                $morelink = html_writer::tag('div', html_writer::link($viewmoreurl, $viewmoretext),
-                        array('class' => 'paging paging-morelink'));
+                //$morelink = html_writer::tag('div', html_writer::link($viewmoreurl, $viewmoretext),
+                 //       array('class' => 'paging paging-morelink'));
             }
         } else if (($totalcount > $CFG->coursesperpage) && $paginationurl && $paginationallowall) {
             // there are more than one page of results and we are in 'view all' mode, suggest to go back to paginated view mode

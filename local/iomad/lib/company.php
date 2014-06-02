@@ -36,8 +36,10 @@ class company {
     public static function by_userid($userid) {
         global $DB;
 
-        $company = $DB->get_record('company_users', array('userid' => $userid), 'companyid', MUST_EXIST);
-        return new company($company->companyid);
+        if ($company = $DB->get_records('company_users', array('userid' => $userid))){
+	   $last = end($company);
+           return new company($last->companyid);
+	}
     }
 
     /**
