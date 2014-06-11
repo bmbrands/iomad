@@ -1,0 +1,1143 @@
+// Growdly's bootswatch
+
+
+// MOODLE BITS THAT NEED FIXING
+div[role="main"] {
+    overflow-x: auto;
+}
+.flexible-wrap {
+    .tbody {
+        overflow: scroll;
+    }
+}
+// Fonts
+@font-face {
+    font-family: 'FontAwesome'; 
+    font-weight: normal;
+    font-style: normal;
+    src: url('[[font:theme|fontawesome-webfont.eot]]?v=4.0.0');
+    src: url('[[font:theme|fontawesome-webfont.eot]]?#iefix&v=4.0.0') format('embedded-opentype'), 
+         url('[[font:theme|fontawesome-webfont.woff]]') format('woff'), 
+         url('[[font:theme|fontawesome-webfont.ttf]]?v=4.0.0') format('truetype'), 
+         url('[[font:theme|fontawesome-webfont.svg]]#fontawesomeregular?v=4.0.0') format('svg');
+}
+
+@font-face {
+    font-family: 'supernett_cnbold_italic';
+    src: url('[[font:theme|supernett-cn_bolditalic-webfont.eot]]');
+    src: url('[[font:theme|supernett-cn_bolditalic-webfont.eot]]?#iefix') format('embedded-opentype'),
+         url('[[font:theme|supernett-cn_bolditalic-webfont.woff]]') format('woff'),
+         url('[[font:theme|supernett-cn_bolditalic-webfont.ttf]]') format('truetype'),
+         url('[[font:theme|supernett-cn_bolditalic-webfont.svg]]#supernett_cnbold_italic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenSans';
+  src: url('[[font:theme|opensans-regular-webfont.eot]]');
+  src: url('[[font:theme|opensans-regular-webfont.eot]]') format('embedded-opentype'),
+       url('[[font:theme|opensans-regular-webfont.woff]]') format('woff'),
+       url('[[font:theme|opensans-regular-webfont.ttf]]') format('truetype'),
+       url('[[font:theme|opensans-regular-webfont.svg]]#opensans_regular') format('svg');
+}
+
+@font-face {
+  font-family: 'OpenSans Bold';
+  src: url('[[font:theme|opensans-bold-webfont.eot]]');
+  src: url('[[font:theme|opensans-bold-webfont.eot]]') format('embedded-opentype'),
+       url('[[font:theme|opensans-bold-webfont.woff]]') format('woff'),
+       url('[[font:theme|opensans-bold-webfont.ttf]]') format('truetype'),
+       url('[[font:theme|opensans-bold-webfont.svg]]#opensans_regular') format('svg');
+}
+
+.jumbotron {
+    background-color: rgba(0, 0, 0, 0);
+}
+.container-fluid {
+    margin: 0 auto;
+    max-width: 1380px;
+}
+#gwslider {
+    padding: 0; 
+}
+#page-site-index li.modtype_page {
+    display: none;
+}
+#page-site-index.editing li.modtype_page {
+    display: block;
+}
+#region-main  {
+    div[role="main"] {
+        .panel;
+        .panel-default;
+        padding:  0 20px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        .block {
+          box-shadow: none;
+          border: 0;
+          padding: 0;
+          margin: 0;
+          background-color: #FFFFFF;
+        }
+    }
+}
+
+.pagelayout-frontpage #region-main,
+.pagelayout-login #region-main,
+.pagelayout-mypublic #region-main {
+    div[role="main"] {
+        background-color: rgba(0, 0, 0, 0);
+        padding: 0px;
+        border: 0;
+        box-shadow: none;
+    }
+}
+
+.pagelayout-frontpage.showcontent .sitetopic {
+    display: none;
+}
+.pagelayout-frontpage.showcontent.editing .sitetopic {
+    display: block;
+}
+
+.mform fieldset.collapsible legend a.fheader,
+.mform legend.ftoggler {
+    margin-left: 0px;
+    &:hover,
+    &:active {
+      color: @link-hover-color;
+      text-decoration: none;
+    }
+}
+legend, #adminsettings h3, 
+.backup-restore .backup-section > h2.header, 
+.backup-restore .backup-section .backup-sub-section h3 {
+  border: 0;
+}
+
+
+// Footer positioning
+html, body {
+    height: 100%;
+
+}
+
+body {
+    background-color: #F7F7F7;
+}
+.wrapperfixedfooter {
+    min-height: 100%;
+}
+
+.pagewrap {
+  overflow: auto;
+  padding-bottom: 150px; 
+}
+
+#page-footer.bootstrapfooter  {
+  position: relative;
+  margin-top: -150px; /* negative value of footer height */
+  height: 150px;
+  clear:both;
+  padding:20px 0 0 0;
+  border: 0;
+}
+
+// Slider
+
+
+.carousel-indicators {
+    text-align: left;
+    padding-left: 30px;
+    bottom: 40px;
+    li {
+        border-radius: 0px;
+        height: 13px;
+        width: 13px;
+        margin: 5px;
+        background-color: @gray-lighter;
+        border: 1px solid @gray-lighter;
+        &.active {
+            height: 13px;
+            width: 13px;
+            background-color: #E0861A;
+            margin: 5px;
+            border: 1px solid #E0861A;
+        }
+    }
+}
+.carousel-fade {
+  .carousel-inner {
+    .item {
+      opacity: 0;
+      -webkit-transition-property: opacity;
+      -moz-transition-property: opacity;
+      -o-transition-property: opacity;
+      transition-property: opacity;
+    }
+
+    .active {
+      opacity: 1;
+    }
+
+    .active.left,
+    .active.right {
+      left: 0;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .next.left,
+    .prev.right {
+      opacity: 1;
+    }
+  }
+
+  .carousel-control {
+    z-index: 2;
+  }
+}
+
+.carousel-inner .item {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    height: 420px;
+    font-size: 14px;
+    line-height: 24px;
+    .growdlybanner {
+        border-radius: 5px;
+        margin-top: 70px;
+        padding: 10px 10px;
+        .heading {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            width: auto; 
+            height: 40px;
+            background: #E0861A;
+            /* Skew */
+            -webkit-transform: skew(20deg); 
+            -moz-transform: skew(20deg); 
+            -o-transform: skew(20deg);
+            transform: skew(20deg);
+            h3 {
+                white-space: nowrap;
+                -webkit-transform: skew(-20deg); 
+                -moz-transform: skew(-20deg); 
+                -o-transform: skew(-20deg);
+                transform: skew(-20deg);
+                padding: 5px 20px;
+                color: #FFF;
+                text-transform: uppercase;
+                font-family: @headings-font-family;
+                margin: 5px 0;
+            }
+        }
+        p {
+            background: rgba(81,80,82,0.8);
+            color: #FFF;
+            margin-left: 8px;
+            margin-right: -8px;
+            margin-bottom: 0;
+            padding: 10px;
+            line-height: 21px;
+        }
+        .skew-wrap {
+            background: #f7f7f7;
+            margin-left: 60%;
+            margin-right: -8px;
+            .btn-skew {
+                width: auto;
+                display: block;
+                height: 40px;
+                .skew-link {
+                    white-space: nowrap;
+                    display: block;
+                    padding: 7px 20px;
+                }
+
+            }
+        }
+    }
+}
+@media (max-width: @screen-xs) {
+    .carousel-inner .item {
+        .growdlybanner {
+            .heading {
+                h3 {
+                    font-size: @font-size-base;
+                }
+            }
+            .skew-wrap {
+                margin-left: 10%;
+            }
+        }
+    }
+}
+
+// Call to action
+.calltoaction {
+    text-align: center;
+    background-color: #080808;
+    font-size: 20px;
+    color: #FFF;
+    margin-bottom: 0px;
+    .contenttext,
+    .contentlink {
+        line-height: 40px;
+    }
+    .contentlink {
+        text-align: center;
+        background-color: #E0861A;
+        a {
+            color: #FFF;
+        }
+    }
+}
+@media (min-width: @screen-md) {
+    .calltoaction {
+        text-align: left;
+        background-color: #080808;
+        font-size: 30px;
+        height: 80px;
+        .contenttext,
+        .contentlink {
+            line-height: 80px;
+
+        }
+        .contentlink:before {
+            position:absolute;
+            top:50%;
+            left:0;
+            width:0;
+            height:1px;
+            content:'';
+            border:13px solid transparent;
+            border-left:14px solid #000000;
+            margin-top:-13px;
+        }
+    }
+}
+
+.carousel.growdly ul {
+    list-style: none;
+    width: 300%;
+}
+
+.carousel.growdly h1, .carousel.growdly h2 {
+    font-size: 40px;
+    line-height: 52px;
+    color: #fff;
+}
+
+// Moodle fixes ======================================================================
+.path-course-view .completionprogress {
+    z-index: 0;
+}
+.course-content ul.topics li.section .left,
+.course-content ul.weeks li.section .left {
+    width: 0px;
+}
+body.editing .course-content ul.topics li.section .left,
+body.editing .course-content ul.weeks li.section .left {
+    width: 40px;
+}
+
+
+
+
+// Fix fitvids
+.mod-indent-outer {
+    display: table;
+}
+// .mediaplugin_html5audio, .mediaplugin_html5video, .mediaplugin_swf, .mediaplugin_flv, .mediaplugin_real, .mediaplugin_youtube, .mediaplugin_vimeo, .mediaplugin_wmp, .mediaplugin_qt {
+//     max-width: 500px;
+//     margin-left: auto;
+//     margin-right: auto;
+// }
+.site-topic ul.section, .course-content ul.section {
+    margin: 0;
+    padding: 0;
+}
+
+
+.block_navigation .type_system,
+.block_navigation .type_course  {
+    li ul {
+        display: none;
+    }
+    li.collaped .tree_item.branch,
+    li .tree_item.branch  {
+        background-image: none;
+    }
+}
+
+
+// Forms ==============================================================================
+// Prevent Form headings from being hidden
+.mform fieldset.collapsible legend a.fheader {
+    margin-left: 0px;
+}
+// Course Box Fixes
+.courses {
+    .panel {
+        margin-bottom: 10px;
+    }
+    .panel .summary {
+        padding-bottom: 0px !important;
+    }
+    .coursebox .boxfooter {
+        margin-bottom: 30px;
+    }
+
+}
+.panel .courseimage {
+    .img-rounded;
+    float: left;
+    max-width: 140px;
+    margin-right: 10px;
+}
+
+.form-item .form-setting input[type="text"], 
+.form-item .form-setting input[type="password"], 
+.form-item .form-setting select, 
+.mform .fcontainer .fitem .felement input[type="text"], 
+.mform .fcontainer .fitem .felement input[type="password"], 
+.mform .fcontainer .fitem .felement select {
+    min-width: 200px;
+    width: auto;
+}
+
+// Vertical Forms only
+.mform {
+    .fcontainer,
+    fieldset {
+        .fitem {
+            &:extend(.form-group);
+            &:extend(.form-horizontal .form-group);
+            .fitemtitle {
+                 .make-md-column(12);
+                 .make-lg-column(12);
+                label {
+                    .form-horizontal .control-label;
+                }
+
+            }
+            .felement {
+                .make-md-column(12);
+                .make-lg-column(12);
+                select,
+                input[type="text"],
+                input[type="password"] {
+                    .form-control;
+                    min-width: 200px;
+                    width: auto;
+                }
+            }
+            select[multiple], select[size] {
+                height: auto;
+            }
+            .felement.fdate_selector,
+            .felement.fdate_time_selector {
+                select {
+                    width: auto;
+                    display: inline-block;
+                    min-width: 60px;
+                }
+                select[size],
+                select[multiple] {
+                    height: auto;
+                }
+                label {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+    fieldset.hidden {
+            &:extend(.form-group);
+            &:extend(.form-horizontal .form-group);
+            > div {
+                .make-md-column(12);
+                .make-md-column-offset(0);
+                .make-lg-column(12);
+                .make-lg-column-offset(0);
+            }
+    }
+}
+.mform .fitemtitle, .form-label {
+    text-align: left;
+}
+
+// Iomad form
+#iomad_company_selector select {
+  width: auto;
+}
+
+
+
+// Frontpage course boxes ==============================================================================
+
+.coursebox .enrolmenticons {
+  float: right;
+}
+
+// Buttons ==============================================================================
+
+button,
+input.form-submit,
+input[type="button"],
+input[type="submit"],
+input[type="reset"]
+{
+    border-radius: 4px;
+}
+
+// Navbar ==============================================================================
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #FFF;
+}
+
+// Force white navbar brand
+#moodlehome{
+    color: #FFFFFF;
+}
+
+// Nav Tabs ==============================================================================
+.nav-justified > li > a {
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 1px;
+    white-space: nowrap;
+}
+.nav-justified {
+    padding: 10px 0 0 0;
+}
+
+.nav-justified {
+    @media (min-width: @screen-sm-min) {
+      > li {
+        display: block;
+        width: 100%;
+        float: none;
+         > a {
+          text-align: center;
+          margin-bottom: 5px;
+        }
+      }
+    }
+    @media (min-width: @screen-md) {
+        border: 0;
+        border-radius: 0;
+
+        > li {
+          display: table-cell;
+          width: 1%;
+          > a {
+            margin-bottom: 0;
+          }
+        }
+    }
+}
+
+.nav {
+    @media (min-width: @screen-sm-min) {
+        > li {
+            position: relative;
+            display: block;
+        }
+    }
+}
+
+.nav-tabs-justified {
+  > li > a {
+    // Override margin from .nav-tabs
+    margin-right: 1px;
+    border-radius: @border-radius-base;
+  }
+
+  > .active > a,
+  > .active > a:hover,
+  > .active > a:focus {
+    border: 1px solid @nav-tabs-justified-link-border-color;
+  }
+
+  @media (min-width: @screen-sm-min) {
+    > li > a {
+      border: 1px solid @nav-tabs-justified-link-border-color;
+      border-radius: @border-radius-base;
+    }
+  }
+  @media (min-width: @screen-md-min) {
+    > li > a {
+      border-bottom: 1px solid @nav-tabs-justified-link-border-color;
+      border-radius: @border-radius-base @border-radius-base 0 0;
+    }
+    > .active > a,
+    > .active > a:hover,
+    > .active > a:focus {
+      border-bottom-color: @nav-tabs-justified-active-link-border-color;
+    }
+  }
+}
+
+
+
+@media (min-width: @screen-md) {
+    .nav-justified {
+        border: 0;
+        padding: 0;
+        border-radius: 0;
+        > li {
+          display: table-cell;
+          width: 1%;
+          > a {
+            margin-bottom: 0;
+          }
+        }
+    }
+}
+
+// IOMAD DASHBOARD ================================================================
+
+.iomadlink_container {
+    background-color: #F7F7F7;
+    border: 1px solid #DDD;
+    @media (min-width: @screen-md-min) {
+        border-top-color: #F7F7F7;
+    }
+    margin-bottom: 15px;
+    > a {
+        display: block;
+        float: left;
+        margin: 10px;
+        min-height: 155px;    
+    }
+    .iomadlink {
+        text-align: center;
+        .iomadicon {
+            display: block;
+            position: relative;
+            margin: 10px 0;
+            .fa-topic {
+                font-size: 54px;
+                margin-bottom: 10px;
+                color: @gray-dark;
+
+            }
+            .fa-action {
+                border-radius: 15px;
+                color: #FFFFFF;
+                background-color: @growdly-orange;
+                font-size: 20px;
+                height: 30px;
+                line-height: 30px;
+                margin-left: -10px;
+                width: 30px;
+                position: absolute;
+                bottom: 0;
+            }
+        }
+
+        .linkname {
+            display: block;
+            width: 100%;
+        }
+    }
+}
+.block_iomad_reports .iomadlink_container {
+  border-top-color: #DDD;
+}
+
+// Fix dropdown menu jumps
+
+.dropdown-menu > li > a i {
+    height: 14px;
+    margin-right: 5px;
+    width: 14px;
+}
+
+// Mini Calendar =========================================================
+.calendar-controls {
+    .previous .arrow:before{
+        font-family: "FontAwesome";
+        content:"\f053";
+    }
+    .next .arrow:before{
+        font-family: "FontAwesome";
+        content:"\f054";
+    }
+}
+
+// IOMAD block images
+.block .content img {
+    max-width: 100%;
+}
+
+
+// Moodle User Menu in Navbar ========================================================
+#moodle-navbar > ul > li > a {
+    font-size: 13px;
+
+    .userpicture {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+    .username {
+        padding-left: 35px;
+    }
+}
+.navbar-brand {
+    font-size: 15px;
+}
+
+// Footer ==============================================================================
+
+#page-footer.bootstrapfooter {
+
+    .innerfooter {
+        
+         border-top-left-radius: 3px;
+         border-top-right-radius: 3px;
+        .footerwidget {
+            padding: 0 15px;
+        }
+        .footinner {
+            border-radius: 4px 4px 0 0;
+            background-color: #FFF;
+        }
+    }
+    
+    .footerheading {
+        border-bottom: 1px solid #E8F4Fb;
+        margin: 0 0 20px;
+        padding: 10px 0;
+        text-align: left;
+    }
+    .footertext {
+        text-align: left;
+        padding-bottom: 20px;
+        ul,
+        ol {
+            list-style: circle inside;
+            padding-left: 0;
+        }
+    }
+}
+
+.growdlyheader {
+    min-height: 68px;
+    background-color: @growdly-orange;
+    .growdlybrand {
+        margin-top: 8px;
+    }
+}
+
+
+.layout-option-whitebg #region-main div[role="main"] {
+    background-color: #FFFFFF;
+    padding: 20px;
+}
+
+#page-site-index.hidecontent .navbar {
+    margin-bottom: 0;
+}
+.banner-container {
+    border-bottom: 45px solid #222222;
+    margin-bottom: 30px;
+    .caption-icon {
+        cursor: pointer;
+        -moz-box-sizing: border-box;
+        background: none repeat scroll 0 0 #FFF;
+        border-radius: 100px;
+        height: 80px;
+        width: 80px;
+        line-height: 70px !important;
+        margin: 10px auto 10px;
+        overflow: hidden;
+        padding: 15px;
+        text-align: center;
+        box-sizing: border-box;
+
+    }
+}
+
+// Courses  ==============================================================================
+
+.course-content ul.topics {
+    padding-left: 0;
+}
+
+// Highlighting blocks ==============================================================================
+.breadcrumb {
+    background-color: #E4E4E4;
+}
+.block {
+    padding: 0 0 10px 0;
+    background-color: #F2F2F2;
+    border: 0;
+    border-radius: 3px;
+    box-shadow: 0 -3px 0 rgba(50, 50, 50, 0.2) inset;
+    .header {
+        background-color: #CFCFCF;
+    }
+    .header h2 {
+        color: @gray-dark;
+        display: block;
+        font-size: 16px;
+        font-weight: normal;
+        overflow: hidden;
+        position: relative;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
+        width: 100%;
+    }
+    .block_action {
+        display: none;
+    }
+}
+
+.block_settings,
+.block_navigation {
+    padding: 0 0 10px 0;
+    background-color: @gray-lighter;
+    color: @gray-dark;
+    border: 0;
+
+    .content hr {
+        border: 0 none;
+        display: none;
+        margin: 0;
+        padding: 0;
+    }
+    a,
+    p,
+    .content {
+        color: @gray-dark;
+    }
+
+    h2.main {
+        line-height: 20px;
+        font-size: 16px;
+    }
+    input {
+        width: auto;
+    }
+
+
+    .content {
+        padding: 0;
+    }
+    .block_tree {
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        ul > li {
+            a {
+                display: block;
+                color: @gray-dark;
+            }
+        }
+    }
+    .block_tree > li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .block_tree > li > p > span {
+            padding: 5px 15px !important;
+    }
+    .leaf img,
+    p.tree_item a img.smallicon {
+        display: none;
+    }
+    .header .title .commands,
+    .footer,
+    .block_tree li > p > a,
+    .block_tree li > p >span {
+        display: block;
+        padding: 3px 15px;
+        text-shadow: none;
+    }
+
+    .block_tree .collapsed .tree_item.branch a:before,
+    .block_tree .collapsed .tree_item.branch span:before,
+    .block_tree .collapsed .tree_item.emptybranch a:before,
+    .block_tree .collapsed .tree_item.emptybranch span:before,
+    .block_tree .contains_branch .tree_item.emptybranch a:before,
+    .block_tree .contains_branch .tree_item.emptybranch span:before,
+    .block_tree .contains_branch .tree_item.branch a:before,
+    .block_tree .contains_branch .tree_item.branch span:before {
+        content:'\25BA';
+        font-size: 11px;
+        margin-right: 5px;
+        color: @growdly-orange;
+    }
+    .block_tree .collapsed .tree_item.branch a:hover:before,
+    .block_tree .collapsed .tree_item.branch span:hover:before,
+    .block_tree .contains_branch .tree_item.emptybranch a:hover:before,
+    .block_tree .contains_branch .tree_item.emptybranch span:hover:before,
+    .block_tree .contains_branch .tree_item.branch a:hover:before,
+    .block_tree .contains_branch .tree_item.branch span:hover:before {
+        color: #FFF;
+    }
+    .block_tree .collapsed .tree_item.branch a:active:before,
+    .block_tree .collapsed .tree_item.branch span:active:before,
+    .block_tree .contains_branch .tree_item.emptybranch a:active:before,
+    .block_tree .contains_branch .tree_item.emptybranch span:active:before,
+    .block_tree .contains_branch .tree_item.branch a:active:before,
+    .block_tree .contains_branch .tree_item.branch span:active:before {
+        color: #FFF;
+    }
+    .block_tree .contains_branch .tree_item.branch.active_tree_node a:before {
+        color: #FFF;
+    }
+    .block_tree .tree_item.branch a:hover:before,
+    .block_tree .tree_item.branch span:hover:before {
+        content: '\25BC';
+        font-size: 11px;
+        margin-right: 5px;
+        color: @growdly-orange;
+    }
+    .block_tree .tree_item.branch p:hover a:before,
+    .block_tree .tree_item.branch p:hover span:before {
+        color: #FFF;
+    }
+
+    .block_tree .tree_item {
+        margin: 0;
+    }
+    .block_tree .collapsed  .tree_item.emptybranch a:before,
+    .block_tree .collapsed  .tree_item.emptybranch span:before {
+        .text-muted
+    }
+
+    .block_tree > li > p> a,
+    .block_tree > li > p >span,
+    .block_tree .nav-header {
+        text-shadow: none;
+    }
+
+    .block_tree li p.active_tree_node,
+    .block_tree li p.active_tree_node:hover {
+      color: #FFFFFF;
+      text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+      background-color: @growdly-orange;
+      a {
+          color: #FFFFFF;
+      }
+    }
+    ul.block_tree ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .block_tree li p:hover,
+    .block_tree li p:active,
+    .block_tree li p:focus {
+      text-decoration: none;
+      background-color: @growdly-orange;
+      color: #FFF;
+      a {
+        color: #FFF;
+        text-decoration: none;
+      }
+    }
+}
+
+
+
+.jsenabled {
+    .block_tree .tree_item.branch {
+        &.loadingbranch {
+            background-image:url([[pix:i/loading_small]]);
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            span:before {
+                content: ' ';
+            }
+        }
+        cursor: pointer;
+    }
+    .block_tree .collapsed ul {
+        display: none;
+    }
+    .block_tree_box .requiresjs {
+        display: inline;
+    }
+}
+
+.block_navigation .block_tree .tree_item.branch.navigation_node a:before {
+    content: none;
+}
+
+.block_navigation .block_tree > li > p,
+.block_navigation .block_tree > li > ul> li > p {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+.block_settings ul.block_tree.list {
+    li {
+        p span,
+        p a {
+            margin-left: 0px;
+        }
+        padding: 0;
+        line-height: 24px;
+    }
+    li.contains_branch {
+        padding-bottom: 0px;
+    }
+    li ul li {
+        p span,
+        p a {
+            margin-left: 15px;
+        }
+    }
+    li ul li ul li {
+        p span,
+        p a {
+            margin-left: 33px;
+        }
+    }
+    li ul li ul li ul li {
+        p span,
+        p a {
+            margin-left: 47px;
+        }
+    }
+    li ul li ul li ul li ul li {
+        p span,
+        p a {
+            margin-left: 60px;
+        }
+    }
+}
+
+.block_navigation ul.block_tree.list {
+    li {
+        line-height: 23px;
+        padding: 0;
+    }
+    li.contains_branch {
+        padding-bottom: 0px;
+    }
+    li {
+        p span,
+        p a {
+            margin-left: 0px;
+        }
+    }
+    li ul li {
+        p span,
+        p a {
+            margin-left: 0px;
+        }
+    }
+    li ul li ul li {
+        p span,
+        p a {
+            margin-left: 15px;
+        }
+    }
+    li ul li ul li ul li {
+        p span,
+        p a {
+            margin-left: 33px;
+        }
+    }
+}
+
+@media (max-width: @screen-xs-max) {
+    .navbar-collapse .pull-right {
+        float: none !important;
+    }
+    #moodle-navbar > ul > li > a .userpicture {
+        left: 0;
+        position: relative;
+        top: 0;
+    }
+}
+
+// Messages ==================================================================
+.box.message {
+    .messagearea {
+
+        .messagehistory {
+            .messagehistory {
+                .mdl-left.left .message {
+                    .make-md-column(12);
+                    .make-md-column-push(0);
+                }
+                .mdl-left.right .message {
+                    .make-md-column(12);
+                    .make-md-column-push(0);
+                }
+                    
+            }
+            .box.center {
+                table.message_user_pictures {
+                    margin-top: 10px;
+                }
+            }
+        }
+        .messagesend {
+            .mform {
+                margin: 0 20px;
+                fieldset .fitem .felement,
+                fieldset.hidden > div {
+                    margin-left: 0;
+                    float: none;
+                    width: 100%;
+                }
+                .fitemtitle, .form-label {
+                    .h3;
+                    float: none;
+                    text-align: left;
+                }
+                fieldset .fitem {
+                    margin-left: 0;
+                    margin-right: 0;
+                    margin-bottom: 0 !important;
+                }
+                .fitem_ftextarea {
+                    margin: 15px;
+                }
+            }
+        }
+    }
+}
+.coursebox .panel-body {
+    min-height: 50px;
+    padding: 15px;
+    position: relative;
+    ul, ol {
+        list-style: disc inside none;
+    }
+}
+.coursebox .coursebtn {
+    position: relative;
+    right: 10px;
+    bottom: 10px;
+}
+#adminthemeselector td img,
+#admindeviceselector td img {
+    max-width: 300px;
+}
+
+.course_category_tree .paging.paging-morelink {
+display: none;
+}
+.section .activity .activityinstance, 
+.section .activity .activityinstance div {
+    display: table-cell;
+}
+@media(min-width: @screen-sm) {
+    .coursebox .coursebtn {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+    }
+}

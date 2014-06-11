@@ -174,6 +174,8 @@ class theme_bootstrap_core_course_renderer extends core_course_renderer {
             }
         }
 
+        $content .= html_writer::tag('div', '', array('class' => 'boxfooter')); // End .coursecat.
+
         return $content;
     }
 
